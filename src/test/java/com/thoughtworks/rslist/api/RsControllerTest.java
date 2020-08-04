@@ -93,6 +93,19 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void changeOneRsEventCategory() throws Exception {
+
+        RsEvent rsEvent = new RsEvent("","category1");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/change/1")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.category").value("category1"))
+                .andExpect(status().isOk());
+    }
 
 
 
