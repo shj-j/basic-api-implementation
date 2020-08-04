@@ -19,6 +19,11 @@ public class RsController<e> {
 
     List<RsEvent> rsList = initialRsList();
 
+    @GetMapping("/rs/all")
+    public List<RsEvent> getRsAllList(){
+        return rsList;
+    }
+
     @GetMapping("/rs/list")
     public List<RsEvent> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
         return rsList.subList(start-1, end);
@@ -32,5 +37,10 @@ public class RsController<e> {
     @PostMapping("/rs/event")
     public void addOneRs( @RequestBody RsEvent rsEvent) {
         rsList.add(rsEvent);
+    }
+
+    @DeleteMapping("/rs/list/delete/{index}")
+    public void deleteOnRsByIndex(@PathVariable int index){
+        rsList.remove(index-1);
     }
 }
