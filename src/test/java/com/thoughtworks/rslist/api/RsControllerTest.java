@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import org.junit.jupiter.api.Test;
@@ -39,16 +40,7 @@ public class RsControllerTest {
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/rs/all"))
-                .andExpect(jsonPath("$[0].eventName", is("firstEvent")))
-                .andExpect(jsonPath("$[0].category", is("unCategory")))
-                .andExpect(jsonPath("$[1].eventName", is("secondEvent")))
-                .andExpect(jsonPath("$[1].category", is("unCategory")))
-                .andExpect(jsonPath("$[2].eventName", is("thirdEvent")))
-                .andExpect(jsonPath("$[2].category", is("unCategory")))
-                .andExpect(jsonPath("$[3].eventName", is("fourthEvent")))
-                .andExpect(jsonPath("$[3].category", is("unCategory")))
-                .andExpect(status().isOk());
+        getAllRs();
     }
 
     @Test
@@ -86,6 +78,21 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[2].category", is("unCategory")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void changeOneRsEventName() throws Exception {
+
+        RsEvent rsEvent = new RsEvent("changeFirstEvent","");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/change/1")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.eventName").value("changeFirstEvent"))
+                .andExpect(status().isOk());
+    }
+
 
 
 

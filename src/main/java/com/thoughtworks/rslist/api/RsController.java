@@ -43,4 +43,19 @@ public class RsController<e> {
     public void deleteOnRsByIndex(@PathVariable int index){
         rsList.remove(index-1);
     }
+
+    @PostMapping("/rs/change/{index}")
+    public RsEvent changeOneRs(@PathVariable int index, @RequestBody RsEvent rsEvent){
+        RsEvent needChangeRs = rsList.get(index-1);
+        String newName = rsEvent.getEventName();
+        String newCategory = rsEvent.getCategory();
+
+        if (! newName.isEmpty()){
+            needChangeRs.setEventName(newName);
+        }
+        if (! newCategory.isEmpty()){
+            needChangeRs.setCategory(newCategory);
+        }
+        return needChangeRs;
+    }
 }
