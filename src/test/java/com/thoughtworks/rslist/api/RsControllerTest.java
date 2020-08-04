@@ -21,7 +21,7 @@ public class RsControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void getOneRsList() throws Exception{
+    void getOneRs() throws Exception{
         mockMvc.perform(get("/rs/list/1"))
                 .andExpect(jsonPath("$.eventName", is("firstEvent")))
                 .andExpect(jsonPath("$.category", is("unCategory")))
@@ -103,6 +103,21 @@ public class RsControllerTest {
 
         mockMvc.perform(post("/rs/change/1")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.category").value("category1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void changeOneRs() throws Exception {
+
+        RsEvent rsEvent = new RsEvent("newName","category1");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/change/1")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.eventName").value("newName"))
                 .andExpect(jsonPath("$.category").value("category1"))
                 .andExpect(status().isOk());
     }
