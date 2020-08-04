@@ -23,16 +23,11 @@ public class RsControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void getRsList() throws Exception{
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(jsonPath("$[0].eventName", is("firstEvent")))
-                .andExpect(jsonPath("$[0].category", is("unCategory")))
-                .andExpect(jsonPath("$[1].eventName", is("secondEvent")))
-                .andExpect(jsonPath("$[1].category", is("unCategory")))
-                .andExpect(jsonPath("$[2].eventName", is("thirdEvent")))
-                .andExpect(jsonPath("$[2].category", is("unCategory")))
+    void getOneRsList() throws Exception{
+        mockMvc.perform(get("/rs/list/1"))
+                .andExpect(jsonPath("$.eventName", is("firstEvent")))
+                .andExpect(jsonPath("$.category", is("unCategory")))
                 .andExpect(status().isOk());
-
     }
 
     @Test

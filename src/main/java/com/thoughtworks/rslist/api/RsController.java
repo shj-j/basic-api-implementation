@@ -24,6 +24,11 @@ public class RsController<e> {
         return rsList.subList(start-1, end);
     }
 
+    @GetMapping("/rs/list/{index}")
+    public RsEvent getOneRsEvent(@PathVariable int index){
+        return rsList.get(index-1);
+    }
+
     @PostMapping("/rs/event")
     public void addOneRs( @RequestBody RsEvent rsEvent) {
         rsList.add(rsEvent);
