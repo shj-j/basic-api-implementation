@@ -60,5 +60,15 @@ public class RsControllerTest {
 
     }
 
+    @Test
+    void getRsBetween() throws Exception{
+        mockMvc.perform(get("/rs/list?start=1&end=2"))
+                .andExpect(jsonPath("$[0].eventName").value("firstEvent"))
+                .andExpect(jsonPath("$[0].category").value("unCategory"))
+                .andExpect(jsonPath("$[1].eventName").value("secondEvent"))
+                .andExpect(jsonPath("$[1].category").value("unCategory"))
+                .andExpect(status().isOk());
+    }
+
 
 }

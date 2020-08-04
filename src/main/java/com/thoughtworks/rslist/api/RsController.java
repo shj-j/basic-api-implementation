@@ -1,11 +1,31 @@
 package com.thoughtworks.rslist.api;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.thoughtworks.rslist.domain.RsEvent;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class RsController {
-  private List<String> rsList = Arrays.asList("第一条事件", "第二条事件", "第三条事件");
+public class RsController<e> {
+
+    public List<RsEvent> initialRsList() {
+        List<RsEvent> initialList = new ArrayList<>();
+        initialList.add(new RsEvent("firstEvent", "unCategory"));
+        initialList.add(new RsEvent("secondEvent", "unCategory"));
+        initialList.add(new RsEvent("thirdEvent", "unCategory"));
+        return  initialList;
+    }
+
+    List<RsEvent> rsList = initialRsList();
+
+    @GetMapping("/rs/list")
+    public List<RsEvent> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
+        return rsList.subList(start-1, end);
+    }
+
+    @PostMapping("/rs/event")
+    public void addOneRs( @RequestBody RsEvent rsEvent) {
+        rsList.add(rsEvent);
+    }
 }
