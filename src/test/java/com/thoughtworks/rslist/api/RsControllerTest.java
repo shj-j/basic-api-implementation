@@ -138,4 +138,48 @@ public class RsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void phoneShouldValid() throws Exception{
+        User newUser = new User("user1", 19,"female", "a@thoughtworks.com","123456");
+        RsEvent rsEvent = new RsEvent("newEvent", "science", newUser);
+
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void emailShouldValid() throws Exception{
+        User newUser = new User("user1", 19,"female", "a@tho","123456");
+        RsEvent rsEvent = new RsEvent("newEvent", "science", newUser);
+
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void nameShouldNotNull() throws Exception{
+        User user = new User("", 19,"female","a@gm", "1123456789");
+        RsEvent rsEvent = new RsEvent("newEvent", "science", user);
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void genderShouldNotNull() throws Exception{
+        User user = new User("", 19,"female","a@gm", "1123456789");
+        RsEvent rsEvent = new RsEvent("newEvent", "science", user);
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
