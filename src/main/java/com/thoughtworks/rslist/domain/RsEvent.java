@@ -2,11 +2,13 @@ package com.thoughtworks.rslist.domain;
 
 import lombok.Data;
 
+import javax.validation.Valid;
+
 @Data
 public class RsEvent {
     private String eventName;
     private String category;
-    private User user;
+    private @Valid User user;
 
     public RsEvent(String name, String category,User user){
         this.eventName = name;

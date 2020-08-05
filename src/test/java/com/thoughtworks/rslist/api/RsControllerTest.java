@@ -111,7 +111,7 @@ public class RsControllerTest {
     }
 
     @Test
-    void should_not_user_to_userlist_but_add_rs()throws Exception{
+    void should_not_user_to_userList_but_add_rs()throws Exception{
 
         User newUser = new User("user1", 19,"female", "a@thoughtworks.com","18888888888");
         RsEvent rsEvent = new RsEvent("newEvent", "science", newUser);
@@ -123,6 +123,19 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
 
         assertEquals(3, RsController.userList.size());
+    }
+
+    @Test
+    void ageShouldValid() throws Exception{
+        User user = new User("validName", 0,"female","a@gmail.com", "11234567890");
+        String userJson = new ObjectMapper().writeValueAsString(user);
+
+        RsEvent rsEvent = new RsEvent("newEvent", "science", user);
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 }
