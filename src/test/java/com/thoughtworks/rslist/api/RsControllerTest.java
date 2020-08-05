@@ -191,4 +191,15 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$", not(hasKey("user1"))))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getUserList() throws Exception{
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$[0].userName", is("user1")))
+                .andExpect(jsonPath("$[0].age", is(19)))
+                .andExpect(jsonPath("$[0].gender", is("male")))
+                .andExpect(jsonPath("$[0].email", is("user1@gmail.com")))
+                .andExpect(jsonPath("$[0].phone", is("11111111111")))
+                .andExpect(status().isOk());
+    }
 }
