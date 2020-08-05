@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -111,7 +112,7 @@ public class RsControllerTest {
     }
 
     @Test
-    void should_not_user_to_userList_but_add_rs()throws Exception{
+    void shouldNotUserToUserListButAddRs()throws Exception{
 
         User newUser = new User("user1", 19,"female", "a@thoughtworks.com","18888888888");
         RsEvent rsEvent = new RsEvent("newEvent", "science", newUser);

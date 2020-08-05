@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,19 +32,20 @@ public class RsController {
 
 
     @GetMapping("/rs/list/all")
-    public List<RsEvent> getRsAllList(){
-      return rsList;
+    public ResponseEntity<List<RsEvent>> getRsAllList(){
+      return ResponseEntity.ok(rsList);
     }
 
     @GetMapping("/rs/list/{index}")
-    public RsEvent getOneRsEvent(@PathVariable int index){
-        return rsList.get(index);
+    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index){
+
+        return ResponseEntity.ok(rsList.get(index));
     }
 
     @GetMapping("/rs/list")
-    public List<RsEvent> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
+    public ResponseEntity<List<RsEvent>> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
 
-        return rsList.subList(start, end+1);
+        return ResponseEntity.ok(rsList.subList(start, end+1));
     }
 
     @DeleteMapping("/rs/list/{index}")
@@ -63,7 +65,6 @@ public class RsController {
         if (! newCategory.isEmpty()){
             needChangeRs.setCategory(newCategory);
         }
-
     }
 
     @PostMapping("/rs/list/event")
