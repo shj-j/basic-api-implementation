@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -182,5 +181,14 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/list/event")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getRsListWithoutUser() throws Exception{
+        mockMvc.perform(get("/rs/list/0"))
+                .andExpect(jsonPath("$.eventName", is("firstEvent")))
+                .andExpect(jsonPath("$.category", is("unCategory")))
+                .andExpect(jsonPath("$", not(hasKey("user1"))))
+                .andExpect(status().isOk());
     }
 }
