@@ -3,9 +3,12 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.InvalidIndexException;
+import javafx.beans.InvalidationListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.InvalidJarIndexException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,8 +48,11 @@ public class RsController {
     }
 
     @GetMapping("/rs/list")
-    public ResponseEntity<List<RsEvent>> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
-
+    public ResponseEntity<List<RsEvent>> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end) throws InvalidIndexException {
+        if (start > rsList.size() || end > rsList.size()){
+            throw new InvalidIndexException("invalid request param");
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"invalid request param\"}");
+        }
         return ResponseEntity.ok(rsList.subList(start, end+1));
     }
 
