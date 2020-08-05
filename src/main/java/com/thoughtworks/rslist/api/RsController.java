@@ -1,18 +1,15 @@
 package com.thoughtworks.rslist.api;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.CommonError;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
-import javafx.beans.InvalidationListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.InvalidJarIndexException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,5 +89,12 @@ public class RsController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(InvalidIndexException.class)
+    public ResponseEntity exceptionHandler(InvalidIndexException ex){
+        CommonError commonError = new CommonError();
+        commonError.setError(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid request param");
     }
 }
