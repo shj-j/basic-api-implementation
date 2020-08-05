@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.domain.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,15 +13,20 @@ import java.util.stream.Stream;
 public class RsController {
 
     public static List<User> userList;
+    public List<RsEvent> rsList;
 
-    User user1 = new User("user1",19,"male","user1@gmail.com","11111111111");
-    User user2 = new User("user2",20,"male","user2@gmail.com","12222222222");
-    User user3 = new User("user3",20,"male","user3@gmail.com","13333333333");
+    public RsController(){
+        User user1 = new User("user1",19,"male","user1@gmail.com","11111111111");
+        User user2 = new User("user2",20,"male","user2@gmail.com","12222222222");
+        User user3 = new User("user3",20,"male","user3@gmail.com","13333333333");
 
-    public List<RsEvent> rsList = Stream.of(
-            new RsEvent("firstEvent", "unCategory",user1),
-            new RsEvent("secondEvent", "unCategory",user2),
-            new RsEvent("thirdEvent", "unCategory",user3)).collect(Collectors.toList());;
+        rsList = Stream.of(
+                new RsEvent("firstEvent", "unCategory",user1),
+                new RsEvent("secondEvent", "unCategory",user2),
+                new RsEvent("thirdEvent", "unCategory",user3)).collect(Collectors.toList());
+
+        userList = Stream.of(user1, user2,user3).collect(Collectors.toList());
+    }
 
 
     @GetMapping("/rs/list/all")
@@ -61,10 +67,17 @@ public class RsController {
 
     @PostMapping("/rs/list/event")
     public void addOneRs(@RequestBody RsEvent rsEvent){
-//        User user = rsEvent.getUser();
+        User user = rsEvent.getUser();
+        String category = rsEvent.getCategory();
+        String eventName = rsEvent.getEventName();
+        long count = rsList.stream().filter(c->c.getUser().getUserName().equals(user.getUserName())).count();
+        if(count == 0) {
+            userList.add(user);
+        }
         rsList.add(rsEvent);
-
     }
-
-
+    @GetMapping("/rs/user")
+    public int getUserListSize(){
+        return userList.size();
+    }
 }

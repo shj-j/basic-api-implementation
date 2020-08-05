@@ -3,19 +3,15 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,7 +94,6 @@ public class RsControllerTest {
 
         User newUser = new User("xiaowang", 19,"female", "a@thoughtworks.com","18888888888");
         RsEvent rsEvent = new RsEvent("fourthEvent", "entertainment", newUser);
-//        rsEvent.setUser(user);
 
         String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
 
@@ -112,6 +107,22 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.user.userName", is("xiaowang")))
                 .andExpect(jsonPath("$.user.age", is(19)))
                 .andExpect(status().isOk());
+        assertEquals(4, RsController.userList.size());
+    }
+
+    @Test
+    void should_not_user_to_userlist_but_add_rs()throws Exception{
+
+        User newUser = new User("user1", 19,"female", "a@thoughtworks.com","18888888888");
+        RsEvent rsEvent = new RsEvent("newEvent", "science", newUser);
+
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/list/event")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertEquals(3, RsController.userList.size());
     }
 
 }
