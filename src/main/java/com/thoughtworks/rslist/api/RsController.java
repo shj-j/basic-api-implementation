@@ -68,7 +68,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/list/event")
-    public void addOneRs(@RequestBody @Valid RsEvent rsEvent){
+    public ResponseEntity<Integer> addOneRs(@RequestBody @Valid RsEvent rsEvent){
         User user = rsEvent.getUser();
         String category = rsEvent.getCategory();
         String eventName = rsEvent.getEventName();
@@ -77,5 +77,7 @@ public class RsController {
             userList.add(user);
         }
         rsList.add(rsEvent);
+        int index = rsList.size() - 1;
+        return ResponseEntity.created(null).header(String.valueOf(index)).build();
     }
 }

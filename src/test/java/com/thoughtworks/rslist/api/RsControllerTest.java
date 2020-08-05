@@ -100,7 +100,7 @@ public class RsControllerTest {
 
         mockMvc.perform(post("/rs/list/event")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list/3"))
                 .andExpect(jsonPath("$.eventName", is("fourthEvent")))
@@ -121,7 +121,7 @@ public class RsControllerTest {
 
         mockMvc.perform(post("/rs/list/event")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         assertEquals(3, RsController.userList.size());
     }
