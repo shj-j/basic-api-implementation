@@ -204,10 +204,17 @@ public class RsControllerTest {
     }
 
     @Test
-    void shouldGiveBadRequestWhenIndexOutOfBand() throws Exception{
+    void shouldGiveBadRequestWhenParamOutOfBand() throws Exception{
         mockMvc.perform(get("/rs/list?start=10&end=10"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid request param")));
+    }
+
+    @Test
+    void shouldGiveBadRequestWhenIndexOutOfBand() throws Exception{
+        mockMvc.perform(get("/rs/list/10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid index")));
     }
 
 }
