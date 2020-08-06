@@ -110,6 +110,7 @@ public class RsController {
     @DeleteMapping("/rs/list/{index}")
     public void deleteOneRsByIndex(@PathVariable int index){
         rsList.remove(index);
+    }
 
     @PutMapping("/rs/list")
     public void updateOneRs(@RequestParam(required = true) int index, @RequestBody RsEvent rsEvent){
