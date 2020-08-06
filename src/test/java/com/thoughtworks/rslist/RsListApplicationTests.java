@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -67,5 +68,19 @@ class RsListApplicationTests {
         assertEquals(0,users.size());
     }
 
+    @Test
+    void shouldGetUserByUserId() throws Exception{
+        UserEntity entity = UserEntity.builder()
+                .userName("name 0")
+                .gender("female")
+                .age(20)
+                .email("name0@gmail.com")
+                .phone("18888888888")
+                .build();
+        userRepository.save(entity);
 
+        mockMvc.perform(get("/users/1"))
+                .andExpect(jsonPath("$.userName",is("name 0")))
+                .andExpect(status().isOk());
+    }
 }

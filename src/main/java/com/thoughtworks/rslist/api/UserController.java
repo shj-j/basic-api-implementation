@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -34,4 +35,8 @@ public class UserController {
         userRepository.deleteById(userId);
     }
 
+    @GetMapping("users/{userId}")
+    public Optional<UserEntity> getUserByUserId(@PathVariable int userId) {
+        return userRepository.findById(userId);
+    }
 }
