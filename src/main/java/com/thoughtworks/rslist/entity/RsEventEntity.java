@@ -22,6 +22,6 @@ public class RsEventEntity {
     private Integer id;
     private String eventName;
     private String category;
-    private Integer userID;
+    private Integer userId;
 
 }

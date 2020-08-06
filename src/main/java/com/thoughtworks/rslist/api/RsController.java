@@ -34,7 +34,7 @@ public class RsController{
         RsEventEntity eventEntity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .category(rsEvent.getCategory())
-                .userID(rsEvent.getUserId())
+                .userId(rsEvent.getUserId())
                 .build();
         rsEventRepository.save(eventEntity);
         return ResponseEntity.ok().build();

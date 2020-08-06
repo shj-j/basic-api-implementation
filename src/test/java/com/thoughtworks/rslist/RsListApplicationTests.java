@@ -85,8 +85,9 @@ class RsListApplicationTests {
                 .phone("18888888888")
                 .build();
         userRepository.save(entity);
+        int userId = entity.getId();
 
-        mockMvc.perform(get("/users/1"))
+        mockMvc.perform(get("/users/"+userId))
                 .andExpect(jsonPath("$.userName",is("name 0")))
                 .andExpect(status().isOk());
     }
@@ -115,7 +116,7 @@ class RsListApplicationTests {
 
         assertEquals("event 0", rsEvents.get(0).getEventName());
         assertEquals(1, rsEvents.size());
-        assertEquals(userId, rsEvents.get(0).getUserID());
+        assertEquals(userId, rsEvents.get(0).getId());
 
     }
 
@@ -129,5 +130,32 @@ class RsListApplicationTests {
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldDeleteRsEventsWhenDeletedUser() throws Exception{
+        UserEntity user = UserEntity.builder()
+                .userName("name 0")
+                .gender("female")
+                .age(20)
+                .email("name0@gmail.com")
+                .phone("18888888888")
+                .build();
+        user = userRepository.save(user);
+        int userId = user.getId();
+
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .eventName("event 0")
+                .category("category1")
+                .userId(userId)
+                .build();
+        rsEventRepository.save(rsEvent);
+
+        mockMvc.perform(delete("/users/"+userId).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+        assertEquals(0, rsEvents.size());
+
     }
 }
