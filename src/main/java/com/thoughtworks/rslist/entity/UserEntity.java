@@ -14,15 +14,15 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class UserEntity {
     @Id
     @GeneratedValue
-    private Integer userid;
+    private Integer id;
     @Column(name = "name")
     private String userName;
     private String gender;
     private int age;
     private String email;
     private String phone;
+    private Integer userId;
 }

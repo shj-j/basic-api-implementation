@@ -3,7 +3,6 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

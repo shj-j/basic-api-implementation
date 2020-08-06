@@ -1,9 +1,13 @@
 package com.thoughtworks.rslist;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.UserController;
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +34,13 @@ class RsListApplicationTests {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     @BeforeEach
     void cleanup(){
-      userRepository.deleteAll();
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -82,5 +89,33 @@ class RsListApplicationTests {
         mockMvc.perform(get("/users/1"))
                 .andExpect(jsonPath("$.userName",is("name 0")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldAddRsEventWhenUserExist() throws Exception {
+        UserEntity entity = UserEntity.builder()
+                .userName("name 0")
+                .gender("female")
+                .age(20)
+                .email("name0@gmail.com")
+                .phone("18888888888")
+                .build();
+        entity = userRepository.save(entity);
+        Integer userId = entity.getUserId();
+
+        RsEvent rsEvent = new RsEvent("event 0","category1", userId );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+
+        assertEquals("event 0", rsEvents.get(0).getEventName());
+        assertEquals(1, rsEvents.size());
+        assertEquals(userId, rsEvents.get(0).getUserID());
+
     }
 }
