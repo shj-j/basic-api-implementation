@@ -1,6 +1,5 @@
 package com.thoughtworks.rslist.api;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.RsEvent;
 <<<<<<< HEAD
 import org.springframework.web.bind.annotation.*;
@@ -8,14 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 =======
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.CommonError;
+import com.thoughtworks.rslist.exception.InvalidIndexException;
+import com.thoughtworks.rslist.exception.InvalidParamException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 >>>>>>> validation
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,15 +97,20 @@ public class RsController {
     }
 
     @GetMapping("/rs/list/{index}")
-    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index){
-
+    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) throws InvalidIndexException {
+        if (index > rsList.size()){
+            throw new InvalidIndexException("invalid index");
+        }
         return ResponseEntity.ok(rsList.get(index));
 >>>>>>> customize-response
     }
 
     @GetMapping("/rs/list")
-    public ResponseEntity<List<RsEvent>> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end){
-
+    public ResponseEntity<List<RsEvent>> getRsSubList(@RequestParam(required = false) int start, @RequestParam(required = false) int end) throws InvalidParamException {
+        if (start > rsList.size() || end > rsList.size()){
+            throw new InvalidParamException("invalid request param");
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"invalid request param\"}");
+        }
         return ResponseEntity.ok(rsList.subList(start, end+1));
     }
 
@@ -154,5 +161,19 @@ public class RsController {
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
 >>>>>>> customize-response
+    }
+
+    @ExceptionHandler({InvalidParamException.class,InvalidIndexException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity exceptionHandler(Exception ex){
+        String errorMessage;
+        CommonError commonError = new CommonError();
+
+        if(ex instanceof MethodArgumentNotValidException){
+            errorMessage = "invalid index";
+        }else {
+            errorMessage = ex.getMessage();
+        }
+        commonError.setError(errorMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
     }
 }
