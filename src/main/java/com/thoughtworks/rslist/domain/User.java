@@ -17,10 +17,6 @@ public class User {
         this.phone = phone;
     }
 
-    public String getUserName(){
-        return userName;
-    }
-
     @Size(max = 8)
     @NotNull
     private String userName;
@@ -37,6 +33,5 @@ public class User {
 
     @Pattern(regexp = "1\\d{10}")
     private String phone;
-
 
 }
