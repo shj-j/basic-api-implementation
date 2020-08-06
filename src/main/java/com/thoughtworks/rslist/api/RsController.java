@@ -4,18 +4,19 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class RsController{
 
-
+    private final UserRepository userRepository;
     private final RsEventRepository rsEventRepository;
-    public RsController(RsEventRepository rsEventRepository){
+    public RsController(RsEventRepository rsEventRepository, UserRepository userRepository){
         this.rsEventRepository = rsEventRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/rs/all")
@@ -25,13 +26,18 @@ public class RsController{
     }
 
     @PostMapping("/rs/event")
-    public void addOneRs( @RequestBody RsEvent rsEvent) {
+    public ResponseEntity addOneRs(@RequestBody RsEvent rsEvent) {
+        if(! userRepository.existsById(rsEvent.getUserId())){
+            return ResponseEntity.badRequest().build();
+        }
+
         RsEventEntity eventEntity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .category(rsEvent.getCategory())
                 .userID(rsEvent.getUserId())
                 .build();
         rsEventRepository.save(eventEntity);
+        return ResponseEntity.ok().build();
     }
 
 //    @GetMapping("/rs/list/{index}")

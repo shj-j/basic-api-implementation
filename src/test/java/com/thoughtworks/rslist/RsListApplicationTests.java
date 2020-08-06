@@ -101,7 +101,7 @@ class RsListApplicationTests {
                 .phone("18888888888")
                 .build();
         entity = userRepository.save(entity);
-        Integer userId = entity.getUserId();
+        Integer userId = entity.getId();
 
         RsEvent rsEvent = new RsEvent("event 0","category1", userId );
 
@@ -117,5 +117,17 @@ class RsListApplicationTests {
         assertEquals(1, rsEvents.size());
         assertEquals(userId, rsEvents.get(0).getUserID());
 
+    }
+
+    @Test
+    void shouldNotAddRsEventWhenUserNotExist() throws Exception{
+        Integer userId = 1000;
+        RsEvent rsEvent = new RsEvent("event 0","category1", userId );
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
