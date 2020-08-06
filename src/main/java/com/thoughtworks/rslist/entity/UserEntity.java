@@ -18,7 +18,7 @@ import javax.validation.constraints.*;
 public class UserEntity {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Integer userid;
     @Column(name = "name")
     private String userName;
     private String gender;

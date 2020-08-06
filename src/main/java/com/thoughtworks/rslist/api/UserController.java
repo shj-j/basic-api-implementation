@@ -4,9 +4,7 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -30,4 +28,10 @@ public class UserController {
                 .build();
         userRepository.save(entity);
     }
+
+    @DeleteMapping("/users/{userId}")
+    public void deleteUserById(@PathVariable int userId){
+        userRepository.deleteById(userId);
+    }
+
 }
