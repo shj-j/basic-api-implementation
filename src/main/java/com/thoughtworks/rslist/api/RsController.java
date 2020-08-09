@@ -49,8 +49,10 @@ public class RsController{
         Integer userId = event.getUserId();
 
         if (userId == rsEvent.getUserId()) {
-            event.setEventName(rsEvent.getEventName());
-            event.setCategory(rsEvent.getCategory());
+            if (rsEvent.getEventName() != null)
+                event.setEventName(rsEvent.getEventName());
+            if (rsEvent.getCategory() != null)
+                event.setCategory(rsEvent.getCategory());
         } else {
             return ResponseEntity.badRequest().build();
         }
