@@ -1,23 +1,23 @@
 package com.thoughtworks.rslist;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +37,8 @@ class RsListApplicationTests {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    VoteRepository voteRepository;
 
     @BeforeEach
     void cleanup(){
@@ -217,5 +219,42 @@ class RsListApplicationTests {
 
         mockMvc.perform(patch("/rs/list/"+eventId).content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldVoteWhenUserVoteNumEnough() throws Exception{
+        UserEntity user = UserEntity.builder()
+                .userName("user 0")
+                .gender("male")
+                .age(20)
+                .email("12@34.com")
+                .phone("13579246810")
+                .voteNum(3)
+                .build();
+        user = userRepository.save(user);
+
+        RsEventEntity event = RsEventEntity.builder()
+                .eventName("new event")
+                .category("category 1")
+                .userId(user.getId())
+                .build();
+        event = rsEventRepository.save(event);
+        Integer rsEventId = event.getId();
+
+        VoteEntity vote = VoteEntity.builder()
+                .localDateTime(LocalDateTime.now())
+                .voteNum(1)
+                .userId(user.getId())
+                .eventId(rsEventId)
+                .build();
+
+        String requestJson = new ObjectMapper().writeValueAsString(vote);
+
+        mockMvc.perform(post("rs/vote"+rsEventId).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        List<VoteEntity> updateVote = voteRepository.findByUserIdAndRsEventId(user.getId(), event.getId());
+
+        assertEquals("1", updateVote.size());
     }
 }

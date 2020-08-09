@@ -26,4 +26,5 @@ public class UserEntity {
     private String email;
     private String phone;
     private Integer userId;
+    private Integer voteNum;
 }
