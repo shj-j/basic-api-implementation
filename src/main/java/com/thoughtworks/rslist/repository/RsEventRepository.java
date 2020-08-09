@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.repository;
 
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
@@ -11,4 +12,6 @@ public interface RsEventRepository extends CrudRepository<RsEventEntity,Integer>
 
     @Transactional
     void deleteByUserId(Integer userId);
+
+
 }

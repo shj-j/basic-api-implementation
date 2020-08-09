@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ public class UserController {
         userRepository.save(entity);
     }
 
+    @Transactional
     @DeleteMapping("/users/{userId}")
     public void deleteUserById(@PathVariable int userId){
 

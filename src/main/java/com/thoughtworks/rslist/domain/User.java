@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class User {
 
-    public User(String userName, int age,String gender,  String email, String phone){
+    public User(String userName, int age, String gender,  String email, String phone){
         this.userName = userName;
         this.age = age;
         this.gender = gender;
