@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,17 +44,18 @@ public class RsController{
     }
 
     @PatchMapping("/rs/list/{rsEventId}")
-    public void updateOneRs(@PathVariable Integer rsEventId, @RequestBody RsEventEntity rsEvent){
-        if(rsEventRepository.existsById(rsEventId)){
-            RsEventEntity event = rsEventRepository.findById(rsEventId).get();
-            Integer userId = event.getUserId();
+    public ResponseEntity updateOneRs(@PathVariable Integer rsEventId, @RequestBody RsEventEntity rsEvent){
+        RsEventEntity event = rsEventRepository.findById(rsEventId).get();
+        Integer userId = event.getUserId();
 
-            if (userId == rsEvent.getUserId()){
-                event.setEventName(rsEvent.getEventName());
-                event.setCategory(rsEvent.getCategory());
-            }
-            rsEventRepository.save(event);
+        if (userId == rsEvent.getUserId()) {
+            event.setEventName(rsEvent.getEventName());
+            event.setCategory(rsEvent.getCategory());
+        } else {
+            return ResponseEntity.badRequest().build();
         }
+        rsEventRepository.save(event);
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 
 //    @GetMapping("/rs/list/{index}")

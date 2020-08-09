@@ -196,4 +196,26 @@ class RsListApplicationTests {
         assertEquals("new event", updateEvent.get().getEventName());
         assertEquals("category 1", updateEvent.get().getCategory());
     }
+    @Test
+    void shouldGive400WhenUserIdNotMatch() throws Exception{
+
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .eventName("event 0")
+                .category("category 0")
+                .userId(100)
+                .build();
+        rsEventRepository.save(rsEvent);
+        int eventId = rsEvent.getId();
+
+        RsEventEntity ReplaceRsEvent = RsEventEntity.builder()
+                .eventName("new event")
+                .category("category 1")
+                .userId(1)
+                .build();
+
+        String requestJson = new ObjectMapper().writeValueAsString(ReplaceRsEvent);
+
+        mockMvc.perform(patch("/rs/list/"+eventId).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
