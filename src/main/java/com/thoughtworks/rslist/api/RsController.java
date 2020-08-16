@@ -1,11 +1,78 @@
 package com.thoughtworks.rslist.api;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.service.RsService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
-public class RsController {
-  private List<String> rsList = Arrays.asList("第一条事件", "第二条事件", "第三条事件");
+public class RsController{
+
+    @Bean
+    public RsService rsService() {
+        return new RsService();
+    }
+
+    private final UserRepository userRepository;
+    private final RsEventRepository rsEventRepository;
+    public RsController(RsEventRepository rsEventRepository, UserRepository userRepository){
+        this.rsEventRepository = rsEventRepository;
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping("/rs/all")
+    public List<RsEventEntity> getRsAllList(){
+
+        return rsEventRepository.findAll();
+    }
+
+    @PostMapping("/rs/event")
+    public ResponseEntity addOneRs(@RequestBody RsEvent rsEvent) {
+        if(! userRepository.existsById(rsEvent.getUserId())){
+            return ResponseEntity.badRequest().build();
+        }
+
+        RsEventEntity eventEntity = RsEventEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .category(rsEvent.getCategory())
+                .userId(rsEvent.getUserId())
+                .build();
+        rsEventRepository.save(eventEntity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/rs/list/{rsEventId}")
+    public void updateOneRs(@PathVariable Integer rsEventId, @RequestBody RsEventEntity rsEvent){
+        if(rsEventRepository.existsById(rsEventId)){
+            RsEventEntity event = rsEventRepository.findById(rsEventId).get();
+            Integer userId = event.getUserId();
+
+            if (userId == rsEvent.getUserId()){
+                event.setEventName(rsEvent.getEventName());
+                event.setCategory(rsEvent.getCategory());
+            }
+            rsEventRepository.save(event);
+        }
+    }
+
+//    @GetMapping("/rs/list/{index}")
+//    public RsEvent getOneRsEvent(@PathVariable int index){
+//
+//    }
+
+//    @DeleteMapping("/rs/list/{index}")
+//    public void deleteOnRsByIndex(@PathVariable int index){
+//
+//    }
+//
+//    @PostMapping("/rs/change/{index}")
+//    public RsEvent updateOneRs(@PathVariable int index, @RequestBody RsEvent rsEvent){
+//
+//    }
 }
