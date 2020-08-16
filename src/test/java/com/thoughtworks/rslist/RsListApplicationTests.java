@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -157,5 +158,37 @@ class RsListApplicationTests {
         List<RsEventEntity> rsEvents = rsEventRepository.findAll();
         assertEquals(0, rsEvents.size());
 
+    }
+
+    @Test
+    void shouldUpdateRsEventWhenMatchUserId() throws Exception{
+        UserEntity user = UserEntity.builder()
+                .userName("name 0")
+                .gender("female")
+                .age(20)
+                .email("name0@gmail.com")
+                .phone("18888888888")
+                .build();
+        user = userRepository.save(user);
+        int userId = user.getId();
+
+
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .eventName("event 0")
+                .category("category1")
+                .userId(userId)
+                .build();
+        rsEventRepository.save(rsEvent);
+        int eventId = rsEvent.getId();
+
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/list/"+eventId).content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        Optional<RsEventEntity> updateEvent = rsEventRepository.findById(eventId);
+
+        assertEquals("new event", updateEvent.get().getEventName());
+        assertEquals("category2", updateEvent.get().getCategory());
     }
 }
